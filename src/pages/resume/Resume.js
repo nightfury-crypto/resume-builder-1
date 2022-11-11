@@ -43,6 +43,7 @@ const Resume = ({ signIn, fbsignin, dref }) => {
             }
         }
         fetchData();
+        
     }, [user, activeSection])
 
 

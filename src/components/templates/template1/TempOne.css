@@ -4,7 +4,16 @@
     height: fit-content;
     background-color: #fff;
     padding: 20px 30px;
-    position: relative; 
+}
+
+.template1 ul {
+    list-style-type: none;
+}
+
+.template1 div {
+    font-size: 12px;
+    position: relative;
+
 }
 
 .general {
@@ -18,7 +27,7 @@
 }
 
 .general > h3 {
-    font-size: 2em;
+    font-size: 1.9em;
     margin-top: 20px;
     font-weight: 600;
     font-family: 'Roboto', sans-serif;
@@ -101,7 +110,7 @@
 }
 
 .top > h3 {
-    font-size: 1.8em;
+    font-size: 1.4em;
     font-weight: 600;
     font-family: 'Roboto', sans-serif;
 }
