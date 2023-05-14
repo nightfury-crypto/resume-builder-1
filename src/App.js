@@ -5,6 +5,12 @@ import { setDoc, doc, getDoc } from "firebase/firestore";
 import Header from './components/header/Header';
 import Resume from './pages/resume/Resume';
 import { useState, useEffect, useRef } from 'react';
+import ResumeCollections from './pages/resumemain/ResumeCollections';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home  from './pages/home/Home';
+import Contact from './pages/contact/Contact';
+import About from './pages/about/About';
+import Footer from './components/footer/Footer';
 // import Home from './pages/home/Home';
 
 function App() {
@@ -34,7 +40,7 @@ function App() {
       if (loggedUser) {
         const userEmail = loggedUser.email
         try {
-          // Add a new document in collection "cities"
+          // Add a new document in collection "users"
           await setDoc(doc(db, "users", userEmail), {
             name: loggedUser.displayName,
             username: "",
@@ -50,12 +56,27 @@ function App() {
           const allDataCheck = await getDoc(detailDocRef)
           if (allDataCheck.exists() === false || detailDocRef.id !== userEmail) {
             await setDoc(detailDocRef, {
-              GeneralInfoDetails: {}
+              resumecollectionall: []
             });
           }
         } catch (e) {
           console.log(e)
         }
+
+        // resume-collection
+        // user-details
+        try {
+          const detailDocRef = doc(db, "resumecollections", userEmail)
+          const allDataCheck = await getDoc(detailDocRef)
+          if (allDataCheck.exists() === false || detailDocRef.id !== userEmail) {
+            await setDoc(detailDocRef, {
+              resumelist: []
+            });
+          }
+        } catch (e) {
+          console.log(e)
+        }
+        // 
       }
     }
     addDetails()
@@ -82,10 +103,44 @@ function App() {
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   });
 
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <><Header signIn={signIn} handlesignout={handlesignout} /> 
+      <Home />
+      </>,
+    },
+    {
+      path: "/about",
+      element: <><Header signIn={signIn} handlesignout={handlesignout} /> 
+      <About />
+      </>,
+    },
+    {
+      path: "/resume",
+      element: <><Header signIn={signIn} handlesignout={handlesignout} /> 
+      <ResumeCollections />
+      </>,
+      errorElement: <div>Error</div>,
+    },
+    {
+      path: "resume/:ResumeId",
+      element: <>
+      <Header />
+      <Resume signIn={signIn} fbsignin={fbsignin} dref={dwnldRef}/>
+      </>,
+    },
+    {
+      path: "/contact",
+      element: <><Header signIn={signIn} handlesignout={handlesignout} /> 
+      <Contact />
+      </>,
+    },
+  ]);
+
   return (
     <div className="app">
-      <Header signIn={signIn} handlesignout={handlesignout} />
-      <Resume signIn={signIn} fbsignin={fbsignin} dref={dwnldRef}/>
+      <RouterProvider router={router} />
     </div>
   );
 }

@@ -5,6 +5,8 @@ import "./Header.css";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
+// react router dom
+import {Link} from "react-router-dom";
 
 const Header = ({ signIn, handlesignout }) => {
     const [user] = useAuthState(auth);
@@ -32,22 +34,24 @@ const Header = ({ signIn, handlesignout }) => {
     };
     return (
         <div className="header">
+            <Link to="/" style={{textDecoration:"none"}}>
             <div className="left">
                 <img src="https://cdn-icons-png.flaticon.com/512/2986/2986347.png"
-                    alt="resume-logo" className="logo" />
+                    alt="resume-logo" className="logo" referrerPolicy="no-referrer" />
                 <h5>
                     <span>RESUME</span>
                     <span>BUILDER</span>
                 </h5>
             </div>
+            </Link>
 
             <div className="right">
                 <>
                     <ul>
-                        <li >HOME</li>
-                        <li>ABOUT</li>
-                        <li>CREATE RESUME</li>
-                        <li>CONTACT US</li>
+                        <li><Link to="/">HOME</Link></li>
+                        <li><Link to="/about">ABOUT</Link></li>
+                        <li><Link to="/resume">CREATE RESUME</Link></li>
+                        <li><Link to="/contact">CONTACT US</Link></li>
                     </ul>
                     <ul>
                         {user ? <li className="avatar-li" ><div className="avatar"
