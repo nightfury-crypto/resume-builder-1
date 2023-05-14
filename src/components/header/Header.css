@@ -7,21 +7,22 @@
     justify-content: space-between;
     align-items: center;
     box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+    z-index: 999 !important;
 }
-.header > .left {
+.header  .left {
     width: fit-content;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     cursor: pointer;
 }
-.header > .left > .logo {
+.header  .left > .logo {
     width: 50px;
     object-fit: contain;
     cursor: pointer;
 }
 
-.header > .left > h5 {
+.header  .left > h5 {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -31,12 +32,12 @@
     position: relative;
 }
 
-.header > .left > h5 span:first-child {
+.header  .left > h5 span:first-child {
     font-family: 'Combo', cursive;
     font-size: 0.9em;
     margin-top: 5px;
 }
-.header > .left > h5 span:last-child {
+.header  .left > h5 span:last-child {
     font-family: 'Shadows Into Light', cursive;
     font-size: 0.7em;
 }

@@ -18,9 +18,13 @@ import LoginComp from "../../components/logincomp/LoginComp";
 import GeneralInfoSkeleton from "../../components/allSkeletons/GeneralInfoSkeleton";
 import EducationInfoSkeleton from "../../components/allSkeletons/EducationInfoSkeleton";
 import TempAll from "../../components/templates/TempAll";
+// react router dom
+import { useParams } from "react-router-dom";
 
 
 const Resume = ({ signIn, fbsignin, dref }) => {
+    const {ResumeId} = useParams()
+    
     const [activeSection, setActiveSection] = useState('general')
     const [user] = useAuthState(auth);
     const [userInfoData, setUserInfoData] = useState(null);
@@ -28,6 +32,7 @@ const Resume = ({ signIn, fbsignin, dref }) => {
     const [save, setSave] = useState(false);
     const [fetchLoad, setFetchLoad] = useState(false)
     const [generateTemp, setGenerateTemp] = useState(false)
+    const [wholeData, setWholeData] = useState(null)
 
     // fetch user data
     useEffect(() => {
@@ -37,14 +42,22 @@ const Resume = ({ signIn, fbsignin, dref }) => {
                 const querySnapshot = doc(db, "user-details", user.email);
                 if (querySnapshot.id === user.email) {
                     const allData = await getDoc(querySnapshot);
-                    setUserInfoData(allData.data());
+                    setWholeData(allData.data())
+                    
+                    allData?.data()?.resumecollectionall?.map(_ => {
+                        if (_.id === ResumeId) {
+                            setUserInfoData(_)
+                        }
+                    })
                     setFetchLoad(false)
                 }
             }
         }
         fetchData();
         
-    }, [user, activeSection])
+    }, [user, activeSection, ResumeId])
+
+    
 
 
     useEffect(() => {
@@ -89,7 +102,7 @@ const Resume = ({ signIn, fbsignin, dref }) => {
                             activeSection === 'project' ? <h6>Project</h6> :
                                 activeSection === 'achieve' ? <h6>achieve</h6> :
                                     activeSection === 'others' ? <h6>others</h6> : <div></div>}</> : <>
-                        {activeSection === 'general' ? <GeneralInfo userInfoData={userInfoData} save={save} setSave={setSave} /> :
+                        {activeSection === 'general' ? <GeneralInfo userInfoData={userInfoData} save={save} setSave={setSave} wholeData={wholeData}/> :
                             activeSection === 'education' ? <EducationInfo userInfoData={userInfoData} save={save} setSave={setSave} /> :
                                 activeSection === 'project' ? <ProjectInfo userInfoData={userInfoData} save={save} setSave={setSave} /> :
                                     activeSection === 'skills' ? <SkillsInfo /> :

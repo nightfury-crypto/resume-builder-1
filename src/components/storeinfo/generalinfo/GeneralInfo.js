@@ -15,7 +15,7 @@ import Alert from '@mui/material/Alert';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../../../firebase-setup/firebase';
-import { updateDoc, doc } from "firebase/firestore";
+import { updateDoc, doc, setDoc } from "firebase/firestore";
 import db from '../../../firebase-setup/firebase';
 
 // material ui
@@ -24,9 +24,11 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { useParams } from 'react-router-dom';
 
-const GeneralInfo = ({ userInfoData, setSave, save }) => {
+const GeneralInfo = ({ userInfoData, setSave, save, wholeData }) => {
     const [user] = useAuthState(auth);
+    const {ResumeId} = useParams()
 
     // general info states
     const [name, setName] = useState('')
@@ -51,25 +53,43 @@ const GeneralInfo = ({ userInfoData, setSave, save }) => {
         { iconValue: 'RedditIcon', icon: <RedditIcon /> },
     ]
     // add user logged in details
+    // async function addDetails() {
+    //     if (user) {
+    //         const userEmail = user.email;
+    //         // user-details
+    //         try {
+    //             // Add a new document in collection "cities"
+    //             await updateDoc(doc(db, "user-details", userEmail), {
+    //                 'GeneralInfoDetails': {
+    //                     'generalarray': {
+    //                         name,
+    //                         tagline,
+    //                         email,
+    //                         phonenum,
+    //                         profileImageUrl,
+    //                         socialLinks: socialLinksAll
+    //                     },
+    //                     sectionType: 'general'
+    //                 }
+    //             });
+    //             setSave(true)
+    //         } catch (e) {
+    //             console.log(e)
+    //         }
+    //         setTimeout(() => {
+    //             setSave(false)
+    //         }, 2000)
+    //     }
+    // }
+
     async function addDetails() {
         if (user) {
             const userEmail = user.email;
             // user-details
+            const tempWholeData = wholeData
             try {
-                // Add a new document in collection "cities"
-                await updateDoc(doc(db, "user-details", userEmail), {
-                    'GeneralInfoDetails': {
-                        'generalarray': {
-                            name,
-                            tagline,
-                            email,
-                            phonenum,
-                            profileImageUrl,
-                            socialLinks: socialLinksAll
-                        },
-                        sectionType: 'general'
-                    }
-                });
+                // Add a new document in collection "user-details"
+                await updateDoc(doc(db, "user-details", userEmail), updateDetail());
                 setSave(true)
             } catch (e) {
                 console.log(e)
@@ -80,9 +100,25 @@ const GeneralInfo = ({ userInfoData, setSave, save }) => {
         }
     }
 
+    const updateDetail = () => {
+        let tempWholeData = wholeData
+        
+        tempWholeData.resumecollectionall.filter((item) => item.id == ResumeId)[0].GeneralInfoDetails = {
+            name,
+            tagline,
+            email,
+            phonenum,
+            profileImageUrl,
+            socialLinks: socialLinksAll
+        }
+        
+        return tempWholeData
+    }
+
     useEffect(() => {
         if (userInfoData) {
-            const generalDetailsFirebase = userInfoData?.GeneralInfoDetails?.generalarray
+            const generalDetailsFirebase = userInfoData?.GeneralInfoDetails
+
             setName(generalDetailsFirebase?.name || '')
             setTagline(generalDetailsFirebase?.tagline || '')
             setEmail(generalDetailsFirebase?.email || '')
@@ -92,9 +128,6 @@ const GeneralInfo = ({ userInfoData, setSave, save }) => {
         }
     }, [userInfoData])
 
-    useEffect(() => {
-
-    }, [])
 
     // delete link chip
     const deletechip = (chipIndex) => {
